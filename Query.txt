@@ -1,0 +1,37 @@
+CREATE DATABASE LCS;
+DROP TABLE IF EXISTS Rpi;
+CREATE TABLE Rpi (
+rPi_id int NOT NULL PRIMARY KEY,
+);
+
+
+
+DROP TABLE IF EXISTS LED;
+CREATE TABLE LED (
+led_id int IDENTITY(1,1) NOT NULL ,
+date datetime NOT NULL,
+light_sensor int NULL,
+led_state int NOT NULL,
+rPi_id int NOT NULL,
+FOREIGN KEY (rPi_id) REFERENCES Rpi(rPi_id)
+);
+
+DROP TABLE IF EXISTS Presettimes;
+CREATE TABLE Presettimes (
+presettimes_id int IDENTITY(1,1) NOT NULL,
+presettimes_ON datetime NOT NULL,
+presettimes_OFF datetime NOT NULL,
+rPi_id int NOT NULL,
+FOREIGN KEY (rPi_id) REFERENCES Rpi(rPi_id)
+);
+
+CREATE TABLE [dbo].[sHat](
+[SenseHatId] [int] IDENTITY(1,1) NOT NULL,
+[rPi_id] [int] NOT NULL,
+[Date] [datetime] NOT NULL,
+[Temperature] [decimal](7, 2) NOT NULL,
+[Humidity] [decimal](7, 2) NOT NULL,
+[Pressure] [int] NOT NULL,
+
+
+) ON [PRIMARY]

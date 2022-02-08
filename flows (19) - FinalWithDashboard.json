@@ -1,0 +1,1041 @@
+[
+    {
+        "id": "9fd08c1d95f249d7",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "fd08d64715586ab8",
+        "type": "ui_switch",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "label": "LED ON/OFF",
+        "tooltip": "",
+        "group": "56fbf9153b9ab7c5",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 700,
+        "y": 380,
+        "wires": [
+            [
+                "2b8a6452b03324ac",
+                "511fd5940b996bac"
+            ]
+        ]
+    },
+    {
+        "id": "74248e4e00728cfb",
+        "type": "ui_time_scheduler",
+        "z": "9fd08c1d95f249d7",
+        "group": "56fbf9153b9ab7c5",
+        "name": "",
+        "startDay": "3",
+        "refresh": 60,
+        "devices": [
+            "Device 1"
+        ],
+        "singleOff": true,
+        "onlySendChange": false,
+        "customPayload": false,
+        "eventMode": false,
+        "eventOptions": [],
+        "sendTopic": false,
+        "lat": "",
+        "lon": "",
+        "customContextStore": "",
+        "outputs": 2,
+        "order": 3,
+        "width": "14",
+        "height": "2",
+        "x": 90,
+        "y": 380,
+        "wires": [
+            [
+                "383b017aae6861a0"
+            ],
+            [
+                "ccbd32150ab55ff9"
+            ]
+        ]
+    },
+    {
+        "id": "2b8a6452b03324ac",
+        "type": "rpi-gpio out",
+        "z": "9fd08c1d95f249d7",
+        "name": "Pin: 7",
+        "pin": "4",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 930,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "63ddcb6aa90997e3",
+        "type": "exec",
+        "z": "9fd08c1d95f249d7",
+        "command": "",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "true",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 310,
+        "y": 720,
+        "wires": [
+            [
+                "05c2f0ecfed2b279"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "3bc09d9057255ee2",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "var d = new Date();\nvar dt = d.getFullYear() + \"-0\" + (d.getMonth()+1) + \"-\" + d.getDate() + \" \" + d.getHours() + \":\" + d.getMinutes() + \":\" + d.getSeconds();\nvar ls = msg.payload.Light_Sensor.slice(0,-1);\nvar query = '{\"action\": \"I\", \"query\" : \"insert into dbo.LED(date,light_sensor,led_state,rpi_id) VALUES (' +\"'\" +dt+\"'\" +','+ ls + \",\"+msg.payload.LED +',1);\"}';\nvar newmsg = {payload: query};\nreturn newmsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 720,
+        "wires": [
+            [
+                "18c2a5cd80820147"
+            ]
+        ]
+    },
+    {
+        "id": "f09fc813545e9eb5",
+        "type": "join",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "mode": "custom",
+        "build": "object",
+        "property": "payload",
+        "propertyType": "msg",
+        "key": "topic",
+        "joiner": "\\n",
+        "joinerType": "str",
+        "accumulate": false,
+        "timeout": "",
+        "count": "2",
+        "reduceRight": false,
+        "reduceExp": "",
+        "reduceInit": "",
+        "reduceInitType": "num",
+        "reduceFixup": "",
+        "x": 690,
+        "y": 720,
+        "wires": [
+            [
+                "3bc09d9057255ee2"
+            ]
+        ]
+    },
+    {
+        "id": "ccbd32150ab55ff9",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "var newmsg;\nif (msg.payload === true) {\n    newmsg = {payload : 1};}\nelse {\n     newmsg = {payload : 0};}\nreturn newmsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nvar run = \"python Desktop/light_sensor.py\";\nreturn run;",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 380,
+        "wires": [
+            [
+                "fd08d64715586ab8"
+            ]
+        ]
+    },
+    {
+        "id": "e27d83aba6f03940",
+        "type": "inject",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "python Desktop/light_sensor.py",
+        "payloadType": "str",
+        "x": 110,
+        "y": 720,
+        "wires": [
+            [
+                "63ddcb6aa90997e3"
+            ]
+        ]
+    },
+    {
+        "id": "511fd5940b996bac",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "msg.topic = \"LED\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 940,
+        "y": 660,
+        "wires": [
+            [
+                "f09fc813545e9eb5"
+            ]
+        ]
+    },
+    {
+        "id": "05c2f0ecfed2b279",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "msg.topic = \"Light_Sensor\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 720,
+        "wires": [
+            [
+                "f09fc813545e9eb5"
+            ]
+        ]
+    },
+    {
+        "id": "23bb3f10588f02b1",
+        "type": "rpi-gpio out",
+        "z": "9fd08c1d95f249d7",
+        "name": "Pin: 11",
+        "pin": "17",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 930,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "8fc14ab924412746",
+        "type": "rpi-gpio out",
+        "z": "9fd08c1d95f249d7",
+        "name": "Pin: 40",
+        "pin": "21",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 930,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "f65a8fc8835725f1",
+        "type": "rpi-gpio out",
+        "z": "9fd08c1d95f249d7",
+        "name": "Pin: 22",
+        "pin": "25",
+        "set": true,
+        "level": "0",
+        "freq": "",
+        "out": "out",
+        "bcm": true,
+        "x": 930,
+        "y": 600,
+        "wires": []
+    },
+    {
+        "id": "ba64c8fe1691107f",
+        "type": "ui_chart",
+        "z": "9fd08c1d95f249d7",
+        "name": "Temperature_Line_chart",
+        "group": "df87cc31f6def879",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Temperature Line Chart",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "Empty",
+        "dot": false,
+        "ymin": "20",
+        "ymax": "40",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": true,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1190,
+        "y": 180,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "92537c8e5764973c",
+        "type": "ui_button",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "group": "64843ee9360b09cc",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "label": "Update Graphs",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "python Desktop/db.py",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 340,
+        "y": 100,
+        "wires": [
+            [
+                "58e75cd6e1257b1d"
+            ]
+        ]
+    },
+    {
+        "id": "5965c64f49d29fbd",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "\nvar data = [[0]];\nvar i =0;\nfor (var item in msg.payload) {\n    var date = Date.parse(msg.payload[item].date);\n    var obj1 = {\"x\":Number(date),\"y\":Number(msg.payload[item].temp)};\n    data[0][i] = obj1;\n    i++;\n    \n}\nmsg.payload=[{\n    \"series\": [\"Temperature\"],\n    \"data\": data,\n    \"label\":[\"Temp\"]\n}];\nmsg.topic = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 180,
+        "wires": [
+            [
+                "ba64c8fe1691107f"
+            ]
+        ]
+    },
+    {
+        "id": "e0fd346c8a6ddfee",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "\nvar data = [[0]];\nvar i =0;\nfor (var item in msg.payload) {\n    var date = Date.parse(msg.payload[item].date);\n    var obj1 = {\"x\":Number(date),\"y\":Number(msg.payload[item].humid)};\n    data[0][i] = obj1;\n    i++;\n    \n}\nmsg.payload=[{\n    \"series\": [\"Humidity\"],\n    \"data\": data,\n    \"label\":[\"Humid\"]\n}];\nmsg.topic = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 120,
+        "wires": [
+            [
+                "d58d8e3f41784456"
+            ]
+        ]
+    },
+    {
+        "id": "d58d8e3f41784456",
+        "type": "ui_chart",
+        "z": "9fd08c1d95f249d7",
+        "name": "Humidity_Line_chart",
+        "group": "5fda8252ee2f1d9d",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Humidity Line Chart",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "Empty",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": true,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1180,
+        "y": 120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "383b017aae6861a0",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "var json = msg.payload;\nvar lis = json.split(\":\");\n\nvar startlis = lis[2].split(\",\");\nvar starttime = startlis[0];\n\nvar endlis = lis[5].split(\"}\");\nvar endtime  = endlis[0];\n\nvar start = new Date(Number(starttime));\nvar end = new Date(Number(endtime));\n\nvar startdt = start.getFullYear() + \"-0\" + (start.getMonth()+1) + \"-\" + start.getDate() + \" \" + start.getHours() + \":\" + start.getMinutes() + \":\" + start.getSeconds();\nvar enddt = end.getFullYear() + \"-0\" + (end.getMonth()+1) + \"-\" + end.getDate() + \" \" + end.getHours() + \":\" + end.getMinutes() + \":\" + end.getSeconds();\n\nvar query = '{\"action\": \"I\", \"query\" : \"insert into dbo.presettimes(presettimes_ON,presettimes_OFF,rpi_id) VALUES (' +\"'\" +startdt+\"'\" +','+ \"'\"+enddt+\"'\" + \",\" +'1);\"}';\nvar newmsg = {payload: query};\n\nreturn newmsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 320,
+        "wires": [
+            [
+                "18c2a5cd80820147"
+            ]
+        ]
+    },
+    {
+        "id": "4bd95c101590285e",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "\nvar data = [[0]];\nvar i =0;\nfor (var item in msg.payload) {\n    var date = Date.parse(msg.payload[item].date);\n    var obj1 = {\"x\":Number(date),\"y\":Number(msg.payload[item].press)};\n    data[0][i] = obj1;\n    i++;\n    \n}\nmsg.payload=[{\n    \"series\": [\"Pressure\"],\n    \"data\": data,\n    \"label\":[\"Press\"]\n}];\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 60,
+        "wires": [
+            [
+                "6801e2b342d37396"
+            ]
+        ]
+    },
+    {
+        "id": "6801e2b342d37396",
+        "type": "ui_chart",
+        "z": "9fd08c1d95f249d7",
+        "name": "Pressure_Line_chart",
+        "group": "1d29433f6c0341f4",
+        "order": 2,
+        "width": "0",
+        "height": "0",
+        "label": "Pressure Line Chart",
+        "chartType": "line",
+        "legend": "true",
+        "xformat": "dd HH:mm",
+        "interpolate": "linear",
+        "nodata": "Empty",
+        "dot": false,
+        "ymin": "",
+        "ymax": "",
+        "removeOlder": 1,
+        "removeOlderPoints": "",
+        "removeOlderUnit": "3600",
+        "cutout": 0,
+        "useOneColor": false,
+        "useUTC": true,
+        "colors": [
+            "#1f77b4",
+            "#aec7e8",
+            "#ff7f0e",
+            "#2ca02c",
+            "#98df8a",
+            "#d62728",
+            "#ff9896",
+            "#9467bd",
+            "#c5b0d5"
+        ],
+        "outputs": 1,
+        "useDifferentColor": false,
+        "className": "",
+        "x": 1180,
+        "y": 60,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "58e75cd6e1257b1d",
+        "type": "exec",
+        "z": "9fd08c1d95f249d7",
+        "command": "",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 530,
+        "y": 100,
+        "wires": [
+            [
+                "6858ba7948b567dc"
+            ],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "4e55cba08317b83f",
+        "type": "inject",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "python Desktop/db.py",
+        "payloadType": "str",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "92537c8e5764973c"
+            ]
+        ]
+    },
+    {
+        "id": "6858ba7948b567dc",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "var output = msg.payload;\nvar line = output.split(\",\");\nline.pop();\nvar arr = [];\nvar first = true;\nfor (var i in line) {\n    var array = line[i].split(\" \");\n    var dt = array[2] + \" \" + array[3];\n    if(first === true){\n        first = false;\n        var t = array[0];\n    } else {\n        t = array[0].slice(1); \n    }\n    var newobj = {topic : t, date : dt, temp : array[4], humid : array[5], press : array[6]};\n    arr[i] = newobj;\n}\n    var newmsg = {payload : arr};\nreturn newmsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 120,
+        "wires": [
+            [
+                "4bd95c101590285e",
+                "e0fd346c8a6ddfee",
+                "5965c64f49d29fbd"
+            ]
+        ]
+    },
+    {
+        "id": "d0948ea6efc1ec8d",
+        "type": "ui_template",
+        "z": "9fd08c1d95f249d7",
+        "group": "d28e097b6740034b",
+        "name": "",
+        "order": 0,
+        "width": "13",
+        "height": "19",
+        "format": "<iframe scrolling=no marginwidth=0 marginheight=0 frameborder=0 height=800 width=600 src=\"http://192.168.1.32//html\"></iframe>",
+        "storeOutMessages": true,
+        "fwdInMessages": true,
+        "resendOnRefresh": true,
+        "templateScope": "local",
+        "className": "",
+        "x": 80,
+        "y": 280,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c4cda9610ac2b2ef",
+        "type": "ui_switch",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "label": "Camera ON/OFF",
+        "tooltip": "",
+        "group": "d28e097b6740034b",
+        "order": 1,
+        "width": "4",
+        "height": "1",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "c47a887d3ffe4ae4"
+            ]
+        ]
+    },
+    {
+        "id": "c47a887d3ffe4ae4",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "if (msg.payload === true){\n    var newmsg = {payload:\"bash RPi_Cam_Web_Interface/start.sh\"};\n} else {\n     newmsg = {payload:\"bash RPi_Cam_Web_Interface/stop.sh\"};\n}\nreturn newmsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 320,
+        "y": 220,
+        "wires": [
+            [
+                "2c9396fa0d50eaf1"
+            ]
+        ]
+    },
+    {
+        "id": "2c9396fa0d50eaf1",
+        "type": "exec",
+        "z": "9fd08c1d95f249d7",
+        "command": "",
+        "addpay": "payload",
+        "append": "",
+        "useSpawn": "false",
+        "timer": "",
+        "winHide": false,
+        "oldrc": false,
+        "name": "",
+        "x": 530,
+        "y": 220,
+        "wires": [
+            [],
+            [],
+            []
+        ]
+    },
+    {
+        "id": "18c2a5cd80820147",
+        "type": "Azure SQL",
+        "z": "9fd08c1d95f249d7",
+        "name": "Azure SQL",
+        "x": 1110,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "62a3be5c8e698bbd",
+        "type": "ui_switch",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "label": "LED ON/OFF",
+        "tooltip": "",
+        "group": "56fbf9153b9ab7c5",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 700,
+        "y": 460,
+        "wires": [
+            [
+                "23bb3f10588f02b1",
+                "511fd5940b996bac"
+            ]
+        ]
+    },
+    {
+        "id": "fdc315903b24167a",
+        "type": "ui_switch",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "label": "LED ON/OFF",
+        "tooltip": "",
+        "group": "56fbf9153b9ab7c5",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 700,
+        "y": 520,
+        "wires": [
+            [
+                "8fc14ab924412746",
+                "511fd5940b996bac"
+            ]
+        ]
+    },
+    {
+        "id": "0e5d8a6e8fa3517a",
+        "type": "ui_switch",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "label": "LED ON/OFF",
+        "tooltip": "",
+        "group": "56fbf9153b9ab7c5",
+        "order": 0,
+        "width": "0",
+        "height": "0",
+        "passthru": true,
+        "decouple": "false",
+        "topic": "topic",
+        "topicType": "msg",
+        "style": "",
+        "onvalue": "1",
+        "onvalueType": "num",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "0",
+        "offvalueType": "num",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 700,
+        "y": 600,
+        "wires": [
+            [
+                "f65a8fc8835725f1",
+                "511fd5940b996bac"
+            ]
+        ]
+    },
+    {
+        "id": "9edeaea916d53d0a",
+        "type": "ui_time_scheduler",
+        "z": "9fd08c1d95f249d7",
+        "group": "56fbf9153b9ab7c5",
+        "name": "",
+        "startDay": "3",
+        "refresh": 60,
+        "devices": [
+            "Device 2"
+        ],
+        "singleOff": true,
+        "onlySendChange": false,
+        "customPayload": false,
+        "eventMode": false,
+        "eventOptions": [],
+        "sendTopic": false,
+        "lat": "",
+        "lon": "",
+        "customContextStore": "",
+        "outputs": 2,
+        "order": 3,
+        "width": "14",
+        "height": "2",
+        "x": 90,
+        "y": 460,
+        "wires": [
+            [
+                "383b017aae6861a0"
+            ],
+            [
+                "e550dd64664d65a2"
+            ]
+        ]
+    },
+    {
+        "id": "e550dd64664d65a2",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "var newmsg;\nif (msg.payload === true) {\n    newmsg = {payload : 1};}\nelse {\n     newmsg = {payload : 0};}\nreturn newmsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nvar run = \"python Desktop/light_sensor.py\";\nreturn run;",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 460,
+        "wires": [
+            [
+                "62a3be5c8e698bbd"
+            ]
+        ]
+    },
+    {
+        "id": "7fe27d4d523775a8",
+        "type": "ui_time_scheduler",
+        "z": "9fd08c1d95f249d7",
+        "group": "56fbf9153b9ab7c5",
+        "name": "",
+        "startDay": "3",
+        "refresh": 60,
+        "devices": [
+            "Device 3"
+        ],
+        "singleOff": true,
+        "onlySendChange": false,
+        "customPayload": false,
+        "eventMode": false,
+        "eventOptions": [],
+        "sendTopic": false,
+        "lat": "",
+        "lon": "",
+        "customContextStore": "",
+        "outputs": 2,
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "x": 90,
+        "y": 520,
+        "wires": [
+            [
+                "383b017aae6861a0"
+            ],
+            [
+                "20514593ec2efa51"
+            ]
+        ]
+    },
+    {
+        "id": "a32369ece153357a",
+        "type": "ui_time_scheduler",
+        "z": "9fd08c1d95f249d7",
+        "group": "56fbf9153b9ab7c5",
+        "name": "",
+        "startDay": "3",
+        "refresh": 60,
+        "devices": [
+            "Device 4"
+        ],
+        "singleOff": true,
+        "onlySendChange": false,
+        "customPayload": false,
+        "eventMode": false,
+        "eventOptions": [],
+        "sendTopic": false,
+        "lat": "",
+        "lon": "",
+        "customContextStore": "",
+        "outputs": 2,
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "x": 90,
+        "y": 600,
+        "wires": [
+            [
+                "383b017aae6861a0"
+            ],
+            [
+                "8cc58b82435a484e"
+            ]
+        ]
+    },
+    {
+        "id": "20514593ec2efa51",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "var newmsg;\nif (msg.payload === true) {\n    newmsg = {payload : 1};}\nelse {\n     newmsg = {payload : 0};}\nreturn newmsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nvar run = \"python Desktop/light_sensor.py\";\nreturn run;",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 520,
+        "wires": [
+            [
+                "fdc315903b24167a"
+            ]
+        ]
+    },
+    {
+        "id": "8cc58b82435a484e",
+        "type": "function",
+        "z": "9fd08c1d95f249d7",
+        "name": "",
+        "func": "var newmsg;\nif (msg.payload === true) {\n    newmsg = {payload : 1};}\nelse {\n     newmsg = {payload : 0};}\nreturn newmsg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "// Code added here will be run once\n// whenever the node is started.\nvar run = \"python Desktop/light_sensor.py\";\nreturn run;",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 600,
+        "wires": [
+            [
+                "0e5d8a6e8fa3517a"
+            ]
+        ]
+    },
+    {
+        "id": "56fbf9153b9ab7c5",
+        "type": "ui_group",
+        "name": "LED Controller",
+        "tab": "b5bf5c48c709d6ce",
+        "order": 1,
+        "disp": true,
+        "width": "14",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "df87cc31f6def879",
+        "type": "ui_group",
+        "name": "Temperature_Chart",
+        "tab": "b5bf5c48c709d6ce",
+        "order": 4,
+        "disp": false,
+        "width": "9",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "64843ee9360b09cc",
+        "type": "ui_group",
+        "name": "Update",
+        "tab": "b5bf5c48c709d6ce",
+        "order": 3,
+        "disp": false,
+        "width": "27",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "5fda8252ee2f1d9d",
+        "type": "ui_group",
+        "name": "Humidity",
+        "tab": "b5bf5c48c709d6ce",
+        "order": 5,
+        "disp": false,
+        "width": "9",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "1d29433f6c0341f4",
+        "type": "ui_group",
+        "name": "Pressure Chart",
+        "tab": "b5bf5c48c709d6ce",
+        "order": 5,
+        "disp": false,
+        "width": "9",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d28e097b6740034b",
+        "type": "ui_group",
+        "name": "Live feed",
+        "tab": "b5bf5c48c709d6ce",
+        "order": 2,
+        "disp": true,
+        "width": "14",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "b5bf5c48c709d6ce",
+        "type": "ui_tab",
+        "name": "Home",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": false
+    }
+]

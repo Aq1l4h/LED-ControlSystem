@@ -1,0 +1,15 @@
+import pyodbc
+server = 'agriled1.database.windows.net'
+database = 'AgriLed'
+username = 'agriled1'
+password = '{Agriled2022}'   
+driver= 'FreeTDS'
+
+with pyodbc.connect('DRIVER='+driver+';SERVER='+server+';PORT=1433;DATABASE='+database+';UID='+username+';PWD='+ password + ';TDS_Version=8.0') as conn:
+    with conn.cursor() as cursor:
+        cursor.execute("SELECT * FROM dbo.sHat ORDER BY SenseHatId DESC;")
+        row = cursor.fetchone()
+        while row:
+            line = (str(row[0]) + " " + str(row[1])+ " " + str(row[2])+ " " + str(row[3])+ " " + str(row[4])+ " " + str(row[5]) + ",")
+            print (line)
+            row = cursor.fetchone()

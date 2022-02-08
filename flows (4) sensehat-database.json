@@ -1,0 +1,73 @@
+[
+    {
+        "id": "d631e53b600a4908",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "eea7ab998617e29d",
+        "type": "rpi-sensehat in",
+        "z": "d631e53b600a4908",
+        "name": "",
+        "motion": false,
+        "env": true,
+        "stick": false,
+        "x": 230,
+        "y": 320,
+        "wires": [
+            [
+                "9c058846fa2a3cea"
+            ]
+        ]
+    },
+    {
+        "id": "9c058846fa2a3cea",
+        "type": "function",
+        "z": "d631e53b600a4908",
+        "name": "FormatHatData",
+        "func": "let temp = msg.payload.temperature;\nlet humi = msg.payload.humidity;\nlet d = new Date();\nlet dt = d.getFullYear() + \"-0\" + (d.getMonth()+1) + \"-\" + d.getDate() + \" \" + d.getHours() + \":\" + d.getMinutes() + \":\" + d.getSeconds();\nlet rpi =1;\nlet press = msg.payload.pressure;\n\nlet newMsg = { \"action\" : \"I\", \"query\" : \"INSERT INTO sHat(Temperature, Humidity, Date, rPi_id, Pressure) VALUES (\" + temp + \",\" + humi +\",\"+\"'\"+dt+\"'\"+\",\" + rpi + \",\" + press + \")\" };\nreturn { payload: newMsg };\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 320,
+        "wires": [
+            [
+                "f5d4722c90b5bc42",
+                "7a25332ee0fa4af4"
+            ]
+        ]
+    },
+    {
+        "id": "f5d4722c90b5bc42",
+        "type": "debug",
+        "z": "d631e53b600a4908",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 730,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "7a25332ee0fa4af4",
+        "type": "Azure SQL",
+        "z": "d631e53b600a4908",
+        "name": "Azure SQL",
+        "x": 850,
+        "y": 420,
+        "wires": [
+            []
+        ]
+    }
+]
